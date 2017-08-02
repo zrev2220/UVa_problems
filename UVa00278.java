@@ -4,7 +4,7 @@ import java.text.*;
 import java.math.*;
 import java.util.regex.*;
 
-public class Solution
+public class Main
 {
 	static PrintStream out = System.out;
 	static final int INF = 1000000000;
