@@ -1,10 +1,10 @@
-// Doesn't pass sample test case yet
-// Issues when l is in the middle of a range of same numbers (l=5 r=10 in sample)
+// Passes sample case, but still WA
 #include <cmath>
 #include <cstdio>
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <map>
 using namespace std;
 // shortcuts for "common" data types in contests
 typedef long long ll;
@@ -58,12 +58,14 @@ int main()
 	{
 		vi arr;
 		vi freq;
+        map<int, int> ends;
 		int last = INF, occ = 1;
 		for (int i = 0; i < n; i++)
 		{
 			int x; scanf("%d", &x);
 			if (last != x)
 			{
+                ends[last] = i - 1;
 				last = x;
 				occ = 1;
 			}
@@ -72,15 +74,12 @@ int main()
 			arr.push_back(x);
 			freq.push_back(occ);
 		}
-		for (int x : freq)
-			printf("%d ", x);
-		printf("\n");
 		SegmentTree freqTree(freq);
 		for (int i = 0; i < q; i++)
 		{
 			int l, r; scanf("%d %d\n", &l, &r);
 			l--; r--;
-			int ans = freq[freqTree.rmq(l, r)];
+			int ans = max(ends[arr[l]] - l, freq[freqTree.rmq(ends[arr[l]] + 1, r)]);
 			printf("%d\n", ans);
 		}
 	}
