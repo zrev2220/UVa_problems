@@ -1,4 +1,3 @@
-// Passes sample, but not uDebug
 import java.io.*;
 import java.util.*;
 import java.text.*;
@@ -22,28 +21,39 @@ public class Main
 			while (br.ready())
 			{
 				String[] list = br.readLine().split(" ");
-				int[] negsLeft = new int[list.length - 1]; int neg = 0;
-				for (int i = negsLeft.length - 1; i >= 0; i--)
-				{
-					if (Integer.parseInt(list[i]) < 0)
-						negsLeft[i] = ++neg;
-				}
-				BigInteger maxProd = new BigInteger(list[0]);
-				BigInteger runningProd = BigInteger.ONE;
-				BigInteger runningProd_neg = BigInteger.ONE;
+				BigInteger maxProd = null;
+				BigInteger maxProdPos = BigInteger.ZERO;
+				BigInteger maxProdNeg = BigInteger.ZERO;
+//				pr.printf("next:%5s max:%10s pos:%10s neg:%10s%n", "null", "null", maxProdPos.toString(), maxProdNeg.toString());
 				for (int i = 0; i < list.length - 1; i++)
 				{
-					BigInteger next = new BigInteger(list[i]);
-					runningProd = runningProd.multiply(next);
-					runningProd_neg = runningProd_neg.multiply(next);
-					maxProd = maxProd.max(runningProd.max(runningProd_neg));
-					if (runningProd.compareTo(BigInteger.ZERO) == 0)
+					BigInteger oldPos = (maxProdPos.compareTo(BigInteger.ZERO) == 0) ? BigInteger.ONE : maxProdPos;
+					BigInteger oldNeg = (maxProdNeg.compareTo(BigInteger.ZERO) == 0) ? BigInteger.ONE : maxProdNeg;
+					int next = Integer.parseInt(list[i]);
+					if (next < 0)
 					{
-						runningProd = BigInteger.ONE;
-						runningProd_neg = BigInteger.ONE;
+						if (oldNeg.compareTo(BigInteger.ZERO) == -1)
+							maxProdPos = oldNeg.multiply(BigInteger.valueOf(next));
+						else
+							maxProdPos = BigInteger.ZERO;
+						maxProdNeg = oldPos.multiply(BigInteger.valueOf(next));
 					}
-					else if (negsLeft[i] % 2 != 0)
-						runningProd = BigInteger.ONE;
+					else if (next > 0)
+					{
+						maxProdPos = oldPos.multiply(BigInteger.valueOf(next));
+						if (maxProdNeg.compareTo(BigInteger.ZERO) == -1)
+							maxProdNeg = oldNeg.multiply(BigInteger.valueOf(next));
+					}
+					else
+					{
+						maxProdPos = BigInteger.ZERO;
+						maxProdNeg = BigInteger.ZERO;
+					}
+					if (maxProd == null)
+						maxProd = (maxProdPos == BigInteger.ZERO) ? maxProdNeg : maxProdPos;
+					else
+						maxProd = maxProd.max(maxProdPos.max(maxProdNeg));
+//					pr.printf("next:%5d max:%10s pos:%10s neg:%10s%n", next, maxProd.toString(), maxProdPos.toString(), maxProdNeg.toString());
 				}
 				pr.println(maxProd);
 			}
