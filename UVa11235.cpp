@@ -74,12 +74,28 @@ int main()
 			arr.push_back(x);
 			freq.push_back(occ);
 		}
+		ends[last] = n - 1;
+		#ifdef DEBUG
+		for (int x : freq)
+			printf("%d ", x);
+		printf("\n");
+		for (auto it = ends.begin(); it != ends.end(); it++)
+			printf("%d: %d\n", it->first, it->second);
+		#endif
 		SegmentTree freqTree(freq);
 		for (int i = 0; i < q; i++)
 		{
 			int l, r; scanf("%d %d\n", &l, &r);
 			l--; r--;
-			int ans = max(ends[arr[l]] - l, freq[freqTree.rmq(ends[arr[l]] + 1, r)]);
+			int ans = -1;
+			if (l == r)
+				ans = 1;
+			else if (ends[arr[l]] == ends[arr[r]])
+				ans = r - l + 1;
+			else if (l == 0 || l == ends[arr[l - 1]] + 1)
+				ans = freq[freqTree.rmq(l, r)];
+			else
+				ans = max(ends[arr[l]] - l + 1, freq[freqTree.rmq(ends[arr[l]] + 1, r)]);
 			printf("%d\n", ans);
 		}
 	}
