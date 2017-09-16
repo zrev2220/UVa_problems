@@ -1,4 +1,3 @@
-// Passes sample case, but still WA
 #include <cmath>
 #include <cstdio>
 #include <vector>
