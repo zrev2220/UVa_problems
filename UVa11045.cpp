@@ -1,5 +1,3 @@
-// not reading sizes correctly
-// lots of debugging statements
 #include <cmath>
 #include <cstring>
 #include <cstdio>
@@ -20,7 +18,6 @@ int res[MAX_V][MAX_V], mf, f, s, t;                          // global variables
 vi p;
 
 void augment(int v, int minEdge) {     // traverse BFS spanning tree from s to t
-    printf("minEdge: %d\n", minEdge);
   if (v == s) { f = minEdge; return; }  // record minEdge in a global variable f
   else if (p[v] != -1) { augment(p[v], min(minEdge, res[p[v]][v])); // recursive
                          res[p[v]][v] -= f; res[v][p[v]] += f; }       // update
@@ -44,19 +41,18 @@ int main()
 			for (int j = 0; j < 2; ++j)
 			{
 				int v = -1;
-				char* size; scanf(" %s", size);
-                printf("size = '%s'\n", size);
-				if (size == "XS")
+				char size[3]; scanf(" %s", size);
+				if (strcmp(size, "XS") == 0)
 					v = 2;
-				else if (size == "S")
+				else if (strcmp(size, "S") == 0)
 					v = 3;
-				else if (size == "M")
+				else if (strcmp(size, "M") == 0)
 					v = 4;
-				else if (size == "L")
+				else if (strcmp(size, "L") == 0)
 					v = 5;
-				else if (size == "XL")
+				else if (strcmp(size, "XL") == 0)
 					v = 6;
-				else if (size == "XXL")
+				else if (strcmp(size, "XXL") == 0)
 					v = 7;
 				res[u][v] = 1;
 			}
@@ -67,15 +63,6 @@ int main()
 		{
 			res[i][t] = n / 6;
 		}
-        for (int i = 0; i < MAX_V; ++i)
-		{
-            printf("%2d|", i);
-			for (int j = 0; j < MAX_V; ++j)
-			{
-                printf("%d", res[i][j]);
-            }
-            printf("\n");
-        }
 		
 		mf = 0;                                              // mf stands for max_flow
 		  while (1) {              // O(VE^2) (actually O(V^3E) Edmonds Karp's algorithm
@@ -95,7 +82,7 @@ int main()
 			mf += f;                 // we can still send a flow, increase the max flow!
 		  }
 		
-		printf("flow: %d People: %d  %s\n", mf, m, mf < m ? "NO" : "YES");
+		printf("%s\n", mf < m ? "NO" : "YES");
 	}
 	return 0;
 }
