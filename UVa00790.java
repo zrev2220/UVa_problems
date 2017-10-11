@@ -16,18 +16,29 @@ public class Main
 		// if necessary
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pr = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-		int N = in.nextInt();
-		in.nextLine(); in.nextLine();
+		int N = 1;
+		try
+		{
+			N = Integer.parseInt(br.readLine());
+			br.readLine();
+		}
+		catch (IOException ex)
+		{
+			err.println("ERROR: " + ex.getMessage());
+			System.exit(1);
+		}
 		while (N-- > 0)
 		{
 			TreeMap<Integer, Team> teams = new TreeMap<>();
+			int maxId = 0;
 			try
 			{
 				String inline = br.readLine();
-				while (!inline.equals("") && br.ready())
+				while (inline != null && !inline.equals(""))
 				{
 					String[] input = inline.split(" ");
 					int id = Integer.parseInt(input[0]);
+					maxId = Math.max(maxId, id);
 					char prob = input[1].charAt(0);
 					String timeString = input[2];
 					boolean passed = input[3].equals("Y");
@@ -39,11 +50,13 @@ public class Main
 					inline = br.readLine();
 				}
 			}
-			catch (Exception ex)
+			catch (IOException ex)
 			{
 				err.println("ERROR: " + ex.getMessage());
 				System.exit(1);
 			}
+			for (int i = 0; i < maxId; ++i)
+				teams.putIfAbsent(i + 1, new Team(i + 1));
 			ArrayList<Team> sortedTeams = new ArrayList<>(teams.values());
 			Collections.sort(sortedTeams);
 			pr.println("RANK TEAM PRO/SOLVED TIME");
@@ -58,6 +71,8 @@ public class Main
 				}
 				pr.printf("%4d %s%n", rank, sortedTeams.get(i).toString());
 			}
+			if (N != 0)
+				pr.println();
 		}
 		
 		pr.close();
@@ -67,8 +82,9 @@ public class Main
 class Team implements Comparable<Team>
 {
 	public int id;
-	public TreeMap<Character, Integer> problems = new TreeMap<>();
+	public TreeMap<Character, TreeSet<Integer>> problems = new TreeMap<>();
 	public int nSolved;
+	public HashSet<Character> solvedProblems = new HashSet<>();
 	public int totalTime;
 	
 	public Team(int _id)
@@ -80,21 +96,46 @@ class Team implements Comparable<Team>
 	
 	public void submission(char prob, int time, boolean passed)
 	{
-		int curTime = problems.getOrDefault(prob, 0);
-		if (passed)
-		{
-			problems.put(prob, -1 * curTime + time);
-			++nSolved;
-			totalTime += -1 * curTime + time;
-		}
+		TreeSet<Integer> subs;
+		if (problems.containsKey(prob))
+			subs = problems.get(prob);
 		else
-			problems.put(prob, curTime - 20);
+		{
+			subs = new TreeSet<>();
+			problems.put(prob, subs);
+		}
+		if (passed && !solvedProblems.contains(prob))
+		{
+			if(!subs.add(time))
+				totalTime += 20;
+			++nSolved;
+			solvedProblems.add(prob);
+			subs = new TreeSet<>(subs.headSet(time, true));
+			totalTime += subs.headSet(subs.last()).size() * 20 + subs.last();
+		}
+		else if (passed && solvedProblems.contains(prob))
+		{
+			totalTime -= subs.headSet(subs.last()).size() * 20 + subs.last();
+			subs.add(time);
+			if (subs.size() != 1)
+				subs.remove(subs.last());
+			totalTime += subs.headSet(subs.last()).size() * 20 + subs.last();
+		}
+		else if (!passed && solvedProblems.contains(prob))
+		{
+			if (time <= subs.last())
+				totalTime += 20;
+		}
+		else if (!passed && !solvedProblems.contains(prob))
+			subs.add(time);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return String.format("%4d %4s       %4s", id, (nSolved != 0) ? String.valueOf(nSolved) : "", (totalTime != 0) ? String.valueOf(totalTime) : "");
+		if (nSolved == 0)
+			return String.format("%4d", id);
+		return String.format("%4d %4d       %4d", id, nSolved, totalTime);
 	}
 	
 	@Override
