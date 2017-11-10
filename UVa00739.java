@@ -41,35 +41,38 @@ public class Main
 		code.put('Y', -1);
 		code.put('Z', 2);
 		// if necessary
-		// BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		// PrintWriter pr = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-		out.printf("         %-25s%s%n", "NAME", "SOUNDEX CODE");
-		while (in.hasNext())
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pr = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+		try
 		{
-			String name  = in.next();
-			String soundex = name.substring(0, 1);
-			int lastx = code.get(soundex.charAt(0));
-			for (int i = 1; i < name.length(); ++i)
+			pr.printf("         %-25s%s%n", "NAME", "SOUNDEX CODE");
+			while (br.ready())
 			{
-				if (soundex.length() == 4)
-					break;
-				else
+				String name  = br.readLine();
+				String soundex = name.substring(0, 1);
+				int lastx = code.get(soundex.charAt(0));
+				for (int i = 1; i < name.length(); ++i)
 				{
-					char letter = name.charAt(i);
-					int x = code.get(letter);
-					if (x != -1 && x != lastx)
+					if (soundex.length() == 4)
+						break;
+					else
 					{
-						soundex += x;
+						char letter = name.charAt(i);
+						int x = code.get(letter);
+						if (x != -1 && x != lastx)
+						{
+							soundex += x;
+						}
+						lastx = x;
 					}
-					lastx = x;
 				}
+				while (soundex.length() < 4)
+					soundex += "0";
+				pr.printf("         %-25s%s%n", name, soundex);
 			}
-			while (soundex.length() < 4)
-				soundex += "0";
-			out.printf("         %-25s%s%n", name, soundex);
-		}
-		out.println("                   END OF OUTPUT");
+			pr.println("                   END OF OUTPUT");
+		} catch (IOException ex) {}
 		
-		// pr.close();
+		pr.close();
 	}
 }
