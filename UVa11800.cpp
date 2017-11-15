@@ -42,7 +42,7 @@ bool areParallel(point a1, point a2, point b1, point b2)
 	point B2 = (b1.x < b2.x) ? b2 : b1;
 	if (A1.x == A2.x || B1.x == B2.x)
 		return A1.x == A2.x && B1.x == B2.x;
-	return ((ll)((ll)(A1.y - A2.y) * INF*INF) / (ll)(A1.x - A2.x) == (ll)((ll)(B1.y - B2.y) * INF*INF) / (ll)(B1.x - B2.x));
+	return ((ll)((ll)(A1.y - A2.y) * INF) / (ll)(A1.x - A2.x) == (ll)((ll)(B1.y - B2.y) * INF) / (ll)(B1.x - B2.x));
 }
 
 bool arePerpendicular(point a1, point a2, point b1, point b2)
@@ -51,10 +51,10 @@ bool arePerpendicular(point a1, point a2, point b1, point b2)
 	point A2 = (a1.x < a2.x) ? a2 : a1;
 	point B1 = (b1.x < b2.x) ? b1 : b2;
 	point B2 = (b1.x < b2.x) ? b2 : b1;
-	if (a1.x == a2.x || b1.x == b2.x || a1.y == a2.y || b1.y == b2.y)
-		return (a1.x == a2.x && b1.y == b2.y) || (a1.y == a2.y && b1.x == b2.x);
-	ll aslope = (ll)((ll)(a1.y - a2.y) * INF*INF) / (ll)(a1.x - a2.x);
-	ll bslope = (ll)((ll)(b1.x - b2.x) * -INF*INF) / (ll)(b1.y - b2.y);
+	if (A1.x == A2.x || B1.x == B2.x || A1.y == A2.y || B1.y == B2.y)
+		return (A1.x == A2.x && B1.y == B2.y) || (A1.y == A2.y && B1.x == B2.x);
+	ll aslope = (ll)((ll)(A1.y - A2.y) * INF) / (ll)(A1.x - A2.x);
+	ll bslope = (ll)((ll)(B1.x - B2.x) * -INF) / (ll)(B1.y - B2.y);
 	return (aslope == bslope);
 }
 
