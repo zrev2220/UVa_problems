@@ -116,9 +116,11 @@ class Team implements Comparable<Team>
 		else if (passed && solvedProblems.contains(prob))
 		{
 			totalTime -= subs.headSet(subs.last()).size() * 20 + subs.last();
-			subs.add(time);
+			boolean faster = subs.add(time);
 			if (subs.size() != 1)
 				subs.remove(subs.last());
+            if (faster)
+                subs = new TreeSet<>(subs.headSet(time, true));
 			totalTime += subs.headSet(subs.last()).size() * 20 + subs.last();
 		}
 		else if (!passed && solvedProblems.contains(prob))
