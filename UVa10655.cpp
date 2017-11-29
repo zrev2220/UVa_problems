@@ -2,7 +2,8 @@
 
 using namespace std;
 #define MAX_N 2
-struct Matrix {int mat[MAX_N][MAX_N];};
+typedef long long ll;
+struct Matrix {ll mat[MAX_N][MAX_N];};
 
 Matrix matMul(Matrix a, Matrix b)
 {
@@ -30,10 +31,9 @@ Matrix matPow(Matrix base, int p)
 
 int main() {
     //ios_base::sync_with_stdio(false);
-    int p, q; cin >> p >> q;
-    while (p != 0 || q != 0)
+    int p, q, n; cin >> p >> q;
+    while (cin >> n)
     {
-        int n; cin >> n;
         Matrix strt;
         strt.mat[0][0] = p;
         strt.mat[0][1] = -q;
