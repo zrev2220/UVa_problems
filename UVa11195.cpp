@@ -41,9 +41,9 @@ void backtrack(int row, int ldiag, int rdiag, bool bad)
 	if (bad) return;
 	if (row == OK) {ans++; return;}
 	int pos = OK & (~(row | ldiag | rdiag));
-	for (int i = 0; i < col; ++i)
-		cout << " ";
-	cout << printBin(pos) << endl;
+	// for (int i = 0; i < col; ++i)
+	// 	cout << " ";
+	// cout << printBin(pos) << endl;
 	while (pos)
 	{
 		int p = pos & -pos;
@@ -74,6 +74,7 @@ int main()
 			}
 		}
 		backtrack(0, 0, 0, 0);
+		--col;
 		printf("Case %d: %d\n", ++caseno, ans);
 
 		cin >> n;
