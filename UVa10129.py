@@ -12,10 +12,15 @@ for _ in range(iread()):
 		start[ord(word[0]) - ord('a')] += 1
 		end[ord(word[-1]) - ord('a')] += 1
 	exceptions = 2
+	amatch = False
 	for i in range(26):
+		if start[i] == 0 and end[i] == 0:
+			continue
 		if start[i] != end[i]:
 			exceptions -= 1
-	if exceptions < 0:
+		if start[i] > 0 and end[i] > 0:
+			amatch = True
+	if exceptions < 0 or not amatch:
 		print("The door cannot be opened.")
 	else:
 		print("Ordering is possible.")
