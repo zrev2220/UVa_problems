@@ -28,36 +28,23 @@ void printvii(vector<ii> v, string sep=" ", string bookend="") {
     cout << bookend << endl;
 }
 
-#define MAXM 10201
+#define MAXM 20201
 #define MAXN 100
 #define COST first
 #define VALUE second
 int m, n;
 vii items;
-vector<vi> dp;
+int dp[MAXM][MAXN];
 
-int doit(int budget, int i) {
-    // FOR(_, i) cout << " ";
-    // cout << "doit(" << budget << ", " << i << ") → ";
-    if (i > n) {
-        // cout << "At end!" << endl;
-        return 0;
-    }
-    if (dp[budget][i] != -1) {
-        // cout << "In DP" << endl;
-        return dp[budget][i];
-    }
+int doit(int spent, int i) {
+    if (i >= n)             return ((spent > 2000 && spent <= m + 200) || spent <= m) ? 0 : -INF;
+    if (dp[spent][i] != -1) return dp[spent][i];
 
-    if (items[i].COST > budget) {
-        // cout << "Too much" << endl;
-        return dp[budget][i] = doit(budget, i + 1);
-    }
-    else {
-        // cout << endl;
-        return dp[budget][i] = max(doit(budget - items[i].COST, i + 1) + items[i].VALUE,
-                                   doit(budget,                 i + 1)
-                               );
-    }
+    if (spent > m + 200)    return -INF;
+    else
+        return dp[spent][i] = max(doit(spent + items[i].COST, i + 1) + items[i].VALUE,
+                                  doit(spent,                 i + 1)
+                              );
 }
 
 int main()
@@ -66,19 +53,10 @@ int main()
     // code goes here
     cin >> m >> n;
     while (cin) {
-        if (m > 2000 - 200) m += 200;
-        dp.clear();
-        dp.assign(m+1, vi(n, -1));
+        memset(dp, -1, sizeof(dp[0][0]) * MAXM * MAXN);
         items.assign(n, ii());
         FOR(i, n) cin >> items[i].COST >> items[i].VALUE;
-        cout << doit(m, 0) << endl;
-        // FOR(i, m) {
-        //     cout << setw(5) << i << ": ";
-        //     FOR(j, n) {
-        //         cout << dp[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
+        cout << doit(0, 0) << endl;
 
         cin >> m >> n;
     }
